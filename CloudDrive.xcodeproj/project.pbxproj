@@ -14,6 +14,13 @@
 		52E7080B1E04E8C60044D3A4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52E708091E04E8C60044D3A4 /* LaunchScreen.storyboard */; };
 		52E708161E04E8C60044D3A4 /* CloudDriveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E708151E04E8C60044D3A4 /* CloudDriveTests.swift */; };
 		52E708211E04E8C60044D3A4 /* CloudDriveUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E708201E04E8C60044D3A4 /* CloudDriveUITests.swift */; };
+		52E7082F1E04ECCB0044D3A4 /* DropBoxDrive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E7082E1E04ECCB0044D3A4 /* DropBoxDrive.swift */; };
+		52E708311E04ED170044D3A4 /* CloudDrive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E708301E04ED170044D3A4 /* CloudDrive.swift */; };
+		52E708341E0B6FFE0044D3A4 /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E708331E0B6FFE0044D3A4 /* DownloadViewController.swift */; };
+		52E708361E0CBB860044D3A4 /* GoogleDrive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E708351E0CBB860044D3A4 /* GoogleDrive.swift */; };
+		7EB5EF3E81828BDAED438B88 /* Pods_CloudDriveUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F6DB57F9210145B839C1960 /* Pods_CloudDriveUITests.framework */; };
+		868DAF2AD9CB99B0F8A85688 /* Pods_CloudDrive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E34786EF333F77F4C2F31E5C /* Pods_CloudDrive.framework */; };
+		B85422FBBA85EDD048B06B6A /* Pods_CloudDriveTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A4A15AA0D1C607249BE28D7 /* Pods_CloudDriveTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +54,20 @@
 		52E7081C1E04E8C60044D3A4 /* CloudDriveUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CloudDriveUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		52E708201E04E8C60044D3A4 /* CloudDriveUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudDriveUITests.swift; sourceTree = "<group>"; };
 		52E708221E04E8C60044D3A4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		52E7082E1E04ECCB0044D3A4 /* DropBoxDrive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropBoxDrive.swift; sourceTree = "<group>"; };
+		52E708301E04ED170044D3A4 /* CloudDrive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudDrive.swift; sourceTree = "<group>"; };
+		52E708321E0515460044D3A4 /* CloudDrive.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CloudDrive.entitlements; sourceTree = "<group>"; };
+		52E708331E0B6FFE0044D3A4 /* DownloadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadViewController.swift; sourceTree = "<group>"; };
+		52E708351E0CBB860044D3A4 /* GoogleDrive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleDrive.swift; sourceTree = "<group>"; };
+		6F6DB57F9210145B839C1960 /* Pods_CloudDriveUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CloudDriveUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A4A15AA0D1C607249BE28D7 /* Pods_CloudDriveTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CloudDriveTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C1764D894334A62C20FE24D /* Pods-CloudDriveUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CloudDriveUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CloudDriveUITests/Pods-CloudDriveUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		870DD74A3E2434713E062CCF /* Pods-CloudDriveTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CloudDriveTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CloudDriveTests/Pods-CloudDriveTests.release.xcconfig"; sourceTree = "<group>"; };
+		AD718230BB4ED7E533D1E2C9 /* Pods-CloudDriveUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CloudDriveUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CloudDriveUITests/Pods-CloudDriveUITests.release.xcconfig"; sourceTree = "<group>"; };
+		B7E9A183E266BA535A86FD7B /* Pods-CloudDrive.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CloudDrive.release.xcconfig"; path = "Pods/Target Support Files/Pods-CloudDrive/Pods-CloudDrive.release.xcconfig"; sourceTree = "<group>"; };
+		DD4EC7861B82B8A02CC332A1 /* Pods-CloudDriveTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CloudDriveTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CloudDriveTests/Pods-CloudDriveTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E34786EF333F77F4C2F31E5C /* Pods_CloudDrive.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CloudDrive.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F37FADDE83DE0374A0AD1BFD /* Pods-CloudDrive.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CloudDrive.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CloudDrive/Pods-CloudDrive.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				868DAF2AD9CB99B0F8A85688 /* Pods_CloudDrive.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B85422FBBA85EDD048B06B6A /* Pods_CloudDriveTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,12 +91,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EB5EF3E81828BDAED438B88 /* Pods_CloudDriveUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		41CF2ABF1D0A500578C1EBCA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F37FADDE83DE0374A0AD1BFD /* Pods-CloudDrive.debug.xcconfig */,
+				B7E9A183E266BA535A86FD7B /* Pods-CloudDrive.release.xcconfig */,
+				DD4EC7861B82B8A02CC332A1 /* Pods-CloudDriveTests.debug.xcconfig */,
+				870DD74A3E2434713E062CCF /* Pods-CloudDriveTests.release.xcconfig */,
+				7C1764D894334A62C20FE24D /* Pods-CloudDriveUITests.debug.xcconfig */,
+				AD718230BB4ED7E533D1E2C9 /* Pods-CloudDriveUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		52E707F41E04E8C50044D3A4 = {
 			isa = PBXGroup;
 			children = (
@@ -81,6 +118,8 @@
 				52E708141E04E8C60044D3A4 /* CloudDriveTests */,
 				52E7081F1E04E8C60044D3A4 /* CloudDriveUITests */,
 				52E707FE1E04E8C60044D3A4 /* Products */,
+				41CF2ABF1D0A500578C1EBCA /* Pods */,
+				5964C2059315825773BD1C48 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -97,12 +136,17 @@
 		52E707FF1E04E8C60044D3A4 /* CloudDrive */ = {
 			isa = PBXGroup;
 			children = (
+				52E708321E0515460044D3A4 /* CloudDrive.entitlements */,
 				52E708001E04E8C60044D3A4 /* AppDelegate.swift */,
 				52E708021E04E8C60044D3A4 /* ViewController.swift */,
+				52E708331E0B6FFE0044D3A4 /* DownloadViewController.swift */,
 				52E708041E04E8C60044D3A4 /* Main.storyboard */,
 				52E708071E04E8C60044D3A4 /* Assets.xcassets */,
 				52E708091E04E8C60044D3A4 /* LaunchScreen.storyboard */,
 				52E7080C1E04E8C60044D3A4 /* Info.plist */,
+				52E7082E1E04ECCB0044D3A4 /* DropBoxDrive.swift */,
+				52E708351E0CBB860044D3A4 /* GoogleDrive.swift */,
+				52E708301E04ED170044D3A4 /* CloudDrive.swift */,
 			);
 			path = CloudDrive;
 			sourceTree = "<group>";
@@ -125,6 +169,16 @@
 			path = CloudDriveUITests;
 			sourceTree = "<group>";
 		};
+		5964C2059315825773BD1C48 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E34786EF333F77F4C2F31E5C /* Pods_CloudDrive.framework */,
+				7A4A15AA0D1C607249BE28D7 /* Pods_CloudDriveTests.framework */,
+				6F6DB57F9210145B839C1960 /* Pods_CloudDriveUITests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -132,9 +186,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 52E708251E04E8C60044D3A4 /* Build configuration list for PBXNativeTarget "CloudDrive" */;
 			buildPhases = (
+				07086D6A0ABCFFA117CEF64D /* [CP] Check Pods Manifest.lock */,
 				52E707F91E04E8C60044D3A4 /* Sources */,
 				52E707FA1E04E8C60044D3A4 /* Frameworks */,
 				52E707FB1E04E8C60044D3A4 /* Resources */,
+				695BA6C27F3E29A9F9F32EC0 /* [CP] Embed Pods Frameworks */,
+				CD69555DB2F43617D2953FE0 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -149,9 +206,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 52E708281E04E8C60044D3A4 /* Build configuration list for PBXNativeTarget "CloudDriveTests" */;
 			buildPhases = (
+				8B6F87979D47FEE9E2E29E40 /* [CP] Check Pods Manifest.lock */,
 				52E7080D1E04E8C60044D3A4 /* Sources */,
 				52E7080E1E04E8C60044D3A4 /* Frameworks */,
 				52E7080F1E04E8C60044D3A4 /* Resources */,
+				77A0D5592F6E5785A9316AC7 /* [CP] Embed Pods Frameworks */,
+				1AAC5AC69E8969F1AA42B194 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -167,9 +227,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 52E7082B1E04E8C60044D3A4 /* Build configuration list for PBXNativeTarget "CloudDriveUITests" */;
 			buildPhases = (
+				60C200B637F4A583F4DEF507 /* [CP] Check Pods Manifest.lock */,
 				52E708181E04E8C60044D3A4 /* Sources */,
 				52E708191E04E8C60044D3A4 /* Frameworks */,
 				52E7081A1E04E8C60044D3A4 /* Resources */,
+				70D4C14AE86BEF079D837EE9 /* [CP] Embed Pods Frameworks */,
+				2045FF7C72C5B217A61373B0 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -193,7 +256,13 @@
 				TargetAttributes = {
 					52E707FC1E04E8C60044D3A4 = {
 						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = D7S3BX6UT5;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 					52E708101E04E8C60044D3A4 = {
 						CreatedOnToolsVersion = 8.0;
@@ -254,6 +323,144 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		07086D6A0ABCFFA117CEF64D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		1AAC5AC69E8969F1AA42B194 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CloudDriveTests/Pods-CloudDriveTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2045FF7C72C5B217A61373B0 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CloudDriveUITests/Pods-CloudDriveUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		60C200B637F4A583F4DEF507 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		695BA6C27F3E29A9F9F32EC0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CloudDrive/Pods-CloudDrive-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		70D4C14AE86BEF079D837EE9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CloudDriveUITests/Pods-CloudDriveUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		77A0D5592F6E5785A9316AC7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CloudDriveTests/Pods-CloudDriveTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8B6F87979D47FEE9E2E29E40 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		CD69555DB2F43617D2953FE0 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CloudDrive/Pods-CloudDrive-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		52E707F91E04E8C60044D3A4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -261,6 +468,10 @@
 			files = (
 				52E708031E04E8C60044D3A4 /* ViewController.swift in Sources */,
 				52E708011E04E8C60044D3A4 /* AppDelegate.swift in Sources */,
+				52E708311E04ED170044D3A4 /* CloudDrive.swift in Sources */,
+				52E708361E0CBB860044D3A4 /* GoogleDrive.swift in Sources */,
+				52E708341E0B6FFE0044D3A4 /* DownloadViewController.swift in Sources */,
+				52E7082F1E04ECCB0044D3A4 /* DropBoxDrive.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,30 +621,39 @@
 		};
 		52E708261E04E8C60044D3A4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F37FADDE83DE0374A0AD1BFD /* Pods-CloudDrive.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = CloudDrive/CloudDrive.entitlements;
+				DEVELOPMENT_TEAM = D7S3BX6UT5;
 				INFOPLIST_FILE = CloudDrive/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = abc.CloudDrive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
 		52E708271E04E8C60044D3A4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B7E9A183E266BA535A86FD7B /* Pods-CloudDrive.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = CloudDrive/CloudDrive.entitlements;
+				DEVELOPMENT_TEAM = D7S3BX6UT5;
 				INFOPLIST_FILE = CloudDrive/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = abc.CloudDrive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
 		52E708291E04E8C60044D3A4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DD4EC7861B82B8A02CC332A1 /* Pods-CloudDriveTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -448,6 +668,7 @@
 		};
 		52E7082A1E04E8C60044D3A4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 870DD74A3E2434713E062CCF /* Pods-CloudDriveTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -462,6 +683,7 @@
 		};
 		52E7082C1E04E8C60044D3A4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7C1764D894334A62C20FE24D /* Pods-CloudDriveUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = CloudDriveUITests/Info.plist;
@@ -475,6 +697,7 @@
 		};
 		52E7082D1E04E8C60044D3A4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AD718230BB4ED7E533D1E2C9 /* Pods-CloudDriveUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = CloudDriveUITests/Info.plist;
@@ -505,6 +728,7 @@
 				52E708271E04E8C60044D3A4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		52E708281E04E8C60044D3A4 /* Build configuration list for PBXNativeTarget "CloudDriveTests" */ = {
 			isa = XCConfigurationList;
@@ -513,6 +737,7 @@
 				52E7082A1E04E8C60044D3A4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		52E7082B1E04E8C60044D3A4 /* Build configuration list for PBXNativeTarget "CloudDriveUITests" */ = {
 			isa = XCConfigurationList;
@@ -521,6 +746,7 @@
 				52E7082D1E04E8C60044D3A4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

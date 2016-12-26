@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11134" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="7ld-ub-jJU">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11106"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="CloudDrive" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -16,11 +18,182 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2eE-SZ-moC">
+                                <state key="normal" title="CloudDrive"/>
+                                <connections>
+                                    <action selector="openDrive" destination="BYZ-38-t0r" eventType="touchUpInside" id="36S-Ws-Enf"/>
+                                </connections>
+                            </button>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="81" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="7bR-Ix-FcU">
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="4Le-g4-3sB"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="Ycd-yx-lya"/>
+                                </connections>
+                            </tableView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0ht-j3-rPm">
+                                <items>
+                                    <barButtonItem enabled="NO" title="&lt;-" id="4ft-ao-K8v">
+                                        <connections>
+                                            <action selector="onBack" destination="BYZ-38-t0r" id="yP7-PB-qt9"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="41M-Pb-hXW">
+                                <state key="normal" title="Download"/>
+                                <connections>
+                                    <segue destination="wOR-CD-wH3" kind="show" id="ZRF-87-L3E"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bcb-Sv-jcn">
+                                <state key="normal" title="Logout"/>
+                                <connections>
+                                    <action selector="logout" destination="BYZ-38-t0r" eventType="touchUpInside" id="S3X-G2-Dqb"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="41M-Pb-hXW" secondAttribute="bottom" constant="8" id="0Mu-J2-wUy"/>
+                            <constraint firstItem="2eE-SZ-moC" firstAttribute="top" secondItem="7bR-Ix-FcU" secondAttribute="bottom" constant="8" id="6bN-Bu-UuK"/>
+                            <constraint firstItem="7bR-Ix-FcU" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="CNJ-qb-Bgu"/>
+                            <constraint firstItem="Bcb-Sv-jcn" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="N0w-5N-s43"/>
+                            <constraint firstItem="41M-Pb-hXW" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="NTa-tv-zPD"/>
+                            <constraint firstItem="0ht-j3-rPm" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="WVj-ab-s3c"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Bcb-Sv-jcn" secondAttribute="bottom" constant="8" id="bce-v8-vuD"/>
+                            <constraint firstItem="0ht-j3-rPm" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="dMa-xU-SuU"/>
+                            <constraint firstItem="0ht-j3-rPm" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="geV-ip-Jat"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="2eE-SZ-moC" secondAttribute="bottom" constant="8" id="iA7-EC-seU"/>
+                            <constraint firstItem="2eE-SZ-moC" firstAttribute="centerX" secondItem="7bR-Ix-FcU" secondAttribute="centerX" id="n7C-F3-JaS"/>
+                            <constraint firstItem="7bR-Ix-FcU" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="syL-U9-8Wf"/>
+                            <constraint firstItem="7bR-Ix-FcU" firstAttribute="top" secondItem="0ht-j3-rPm" secondAttribute="bottom" id="xl0-rZ-jne"/>
+                        </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="yVj-F0-P01"/>
+                    <connections>
+                        <outlet property="goBackBtn" destination="4ft-ao-K8v" id="lBk-Ei-FYO"/>
+                        <outlet property="tableView" destination="7bR-Ix-FcU" id="hIA-VQ-Z8V"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="1055.2" y="109.29535232383809"/>
+        </scene>
+        <!--Download View Controller-->
+        <scene sceneID="qiF-0s-ScE">
+            <objects>
+                <viewController id="wOR-CD-wH3" customClass="DownloadViewController" customModule="CloudDrive" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="fR9-f2-sLf"/>
+                        <viewControllerLayoutGuide type="bottom" id="5he-52-Ot6"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="lC9-9I-iRN">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="114" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Wg6-zw-41p">
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DownloadCell" rowHeight="114" id="Dyu-4b-O2Q" customClass="DownloadCell" customModule="CloudDrive" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="92" width="343" height="114"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Dyu-4b-O2Q" id="orV-Vv-Py6">
+                                            <frame key="frameInset" width="343" height="113"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="File name" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UAy-Id-fft">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hqe-u0-pcX"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVR-Wq-hwx">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cloud drive" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="snd-47-Zju">
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="UVR-Wq-hwx" firstAttribute="top" secondItem="hqe-u0-pcX" secondAttribute="bottom" id="1D3-kb-f4S"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="UVR-Wq-hwx" secondAttribute="trailing" id="3Uy-Ef-wXL"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="snd-47-Zju" secondAttribute="trailing" id="58R-Ew-b9H"/>
+                                                <constraint firstItem="snd-47-Zju" firstAttribute="top" secondItem="UVR-Wq-hwx" secondAttribute="bottom" id="66D-3k-LkC"/>
+                                                <constraint firstItem="UVR-Wq-hwx" firstAttribute="leading" secondItem="orV-Vv-Py6" secondAttribute="leadingMargin" id="CyB-ea-m3R"/>
+                                                <constraint firstItem="snd-47-Zju" firstAttribute="leading" secondItem="orV-Vv-Py6" secondAttribute="leadingMargin" id="D04-fY-dsv"/>
+                                                <constraint firstItem="hqe-u0-pcX" firstAttribute="leading" secondItem="orV-Vv-Py6" secondAttribute="leadingMargin" id="MAs-FO-qH7"/>
+                                                <constraint firstItem="hqe-u0-pcX" firstAttribute="top" secondItem="UAy-Id-fft" secondAttribute="bottom" id="VQG-YD-HbM"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="hqe-u0-pcX" secondAttribute="trailing" id="YHj-1e-Xmv"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="snd-47-Zju" secondAttribute="bottom" id="iAb-yC-x1m"/>
+                                                <constraint firstItem="UAy-Id-fft" firstAttribute="top" secondItem="orV-Vv-Py6" secondAttribute="topMargin" id="jbi-Ku-6pM"/>
+                                                <constraint firstItem="UAy-Id-fft" firstAttribute="leading" secondItem="orV-Vv-Py6" secondAttribute="leadingMargin" id="o1O-ra-DU8"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="UAy-Id-fft" secondAttribute="trailing" id="xlc-iE-t0Q"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="cloudDriveLabel" destination="snd-47-Zju" id="fow-pX-oEO"/>
+                                            <outlet property="filenameLable" destination="UAy-Id-fft" id="vUa-Wh-Zsa"/>
+                                            <outlet property="progressView" destination="hqe-u0-pcX" id="l8f-bw-3MO"/>
+                                            <outlet property="statusLabel" destination="UVR-Wq-hwx" id="1py-Wy-7CP"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="wOR-CD-wH3" id="EFI-9k-oJD"/>
+                                    <outlet property="delegate" destination="wOR-CD-wH3" id="n6k-U3-Vnm"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="Wg6-zw-41p" secondAttribute="trailing" id="6Hn-xb-3gN"/>
+                            <constraint firstItem="Wg6-zw-41p" firstAttribute="top" secondItem="fR9-f2-sLf" secondAttribute="bottom" constant="8" symbolic="YES" id="KAy-qI-29e"/>
+                            <constraint firstItem="5he-52-Ot6" firstAttribute="top" secondItem="Wg6-zw-41p" secondAttribute="bottom" constant="8" symbolic="YES" id="Vvz-bx-Brf"/>
+                            <constraint firstItem="Wg6-zw-41p" firstAttribute="leading" secondItem="lC9-9I-iRN" secondAttribute="leadingMargin" id="cp2-ns-FLB"/>
+                        </constraints>
+                    </view>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="color" keyPath="completeColor">
+                            <color key="value" red="0.00046093262532472429" green="0.71535869160256405" blue="0.022061669313477594" alpha="1" colorSpace="calibratedRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="errorColor">
+                            <color key="value" red="0.81802295442307682" green="0.14097059218379313" blue="0.090158687236606874" alpha="1" colorSpace="calibratedRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="cancelColor">
+                            <color key="value" red="0.11937997305300874" green="0.2624179076897038" blue="0.89462551852564098" alpha="1" colorSpace="calibratedRGB"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <outlet property="tableView" destination="Wg6-zw-41p" id="OcJ-cf-HE6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="puC-b5-Zav" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1984.8" y="108.39580209895054"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="ooc-Jt-ru5">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="7ld-ub-jJU" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="dRz-IM-IxH">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="kF1-zN-aoc"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GDB-zR-xlC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="116" y="109.29535232383809"/>
         </scene>
     </scenes>
 </document>
