@@ -31,6 +31,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewDidAppear(animated)
         
         self.title = "Cloud Files"
+        
+        CloudDriveManager.shareInstance.autoCleanDownloadTask = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,10 +40,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Dispose of any resources that can be recreated.
     }
     
-    func showContentInPath(path:String = ""){
+    func showContentWithMetadata(metadata:CloudDriveMetadata?){
         
-        let newPath = path == "" ? CloudDriveManager.shareInstance.rootPathOfCloudDrive() : path
-        CloudDriveManager.shareInstance.listContentInPath(path: newPath, completeHandler: { result, error in
+        CloudDriveManager.shareInstance.listContentWithMetadata(metadata: metadata, completeHandler: { result, error in
             
             guard error == nil else {
                 
@@ -61,7 +62,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     @IBAction func onBack(){
         
-        showContentInPath(path: CloudDriveManager.shareInstance.previousPath)
+        CloudDriveManager.shareInstance.goToParentDirectory { result, error in
+            
+            guard error == nil else {
+                
+                return
+            }
+            
+            if let data = result{
+                
+                self.data = data
+            }
+            else{
+                self.data = nil
+            }
+        }
     }
     
     @IBAction func logout(){
@@ -117,7 +132,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 case .Success:
                     
                     NSLog("log in successful")
-                    self.showContentInPath()
+                    self.showContentWithMetadata(metadata: nil)
                     break
                 case .Cancel:
                     
@@ -148,7 +163,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 case .Success:
                     
                     NSLog("log in successful")
-                    self.showContentInPath()
+                    self.showContentWithMetadata(metadata: nil)
                     break
                 case .Cancel:
                     
@@ -209,16 +224,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         if item.isFolder {
             
-            showContentInPath(path: CloudDriveManager.shareInstance.appendingPathComponent(path: item.underPath, component: item.name))
+            showContentWithMetadata(metadata: item)
         }
         else {
             
             let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
             
             let localFilePath = (documentsPath as NSString).appendingPathComponent(item.name)
-            let filePath = CloudDriveManager.shareInstance.appendingPathComponent(path: item.underPath, component: item.name)
             
-            CloudDriveManager.shareInstance.downloadFileFromPath(path: filePath, localPath: localFilePath, resultHandler: { task, error in
+            
+            CloudDriveManager.shareInstance.downloadFileFromPath(metadata: item, localPath: localFilePath, resultHandler: { task, error in
                 
                 if let err = error{
                     
@@ -245,6 +260,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     
                 }
             })
+            
         }
     }
 }

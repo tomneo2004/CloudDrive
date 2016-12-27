@@ -228,13 +228,24 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
     /**
      Get list of data at path
      */
-    func contentsAtPath(path:String, complete:(([CloudDriveMetadata]?, CloudDriveError?)->())?){
+    func contentsWithMetadata(metadata:CloudDriveMetadata?, complete:(([CloudDriveMetadata]?, CloudDriveError?)->())?){
+        
+        //default is root
+        var queryString = "'root' in parents"
+        var underRoot : Bool = true
+        
+        if let meta = metadata{
+            
+            queryString = (queryString as NSString).replacingOccurrences(of: "root", with: meta.fileId)
+            
+            underRoot = false
+        }
         
         let query = GTLQueryDrive.queryForFilesList()
         query?.restrictToMyDrive = true
         query?.includeRemoved = false
         query?.includeDeleted = false
-        query?.q = "'0ByNb_6ANzXiLOUlaTHJSZGU4aGc' in parents and trashed=false"
+        query?.q = String(format: "%@ and trashed=false", queryString)
         
         self.driveService.executeQuery(query!) { ticket, result, error in
             
@@ -242,18 +253,34 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
                 
                 if let handler = complete{
                     
-                    print(error)
                     handler(nil, CloudDriveError.CloudDriveInternalError(error as! String))
                 }
+                
             }
             else {
                 
+                var retMetadata = Array<CloudDriveMetadata>()
+                
                 let fileLists : GTLDriveFileList = result as! GTLDriveFileList
                 
-                for f in fileLists.files{
+                if let list = fileLists.files{
                     
-                    print("file: \(f)")
-                    print("\n")
+                    for f in list{
+                        
+                        let file : GTLDriveFile = f as! GTLDriveFile
+                        
+                        let isFolder = file.mimeType == "application/vnd.google-apps.folder"
+                        
+                        let newMetadata = GoogleDriveMetadata(m_fileId: file.identifier, m_folder: isFolder, m_underRootFolder: underRoot, m_name: file.name, m_mimeType: file.mimeType)
+                        
+                        retMetadata.append(newMetadata)
+                    }
+                }
+                
+                
+                if let handler = complete {
+                    
+                    handler(retMetadata, nil)
                 }
             }
         }
@@ -314,9 +341,12 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
     /**
      Return a new download task
      */
-    func createDownloadTask(path:String, localPath:String) -> CloudDriveDownloadTask{
+    func createDownloadTask(metadata:CloudDriveMetadata, localPath:String) -> CloudDriveDownloadTask{
         
-        let download = DropBoxDownload(type: .GoogleDrive, path: path, localPath: localPath)
+        
+        let download = GoogleDriveDownload(file_ID:metadata.fileId, file_name:metadata.name, type: .GoogleDrive, path: "", localPath: localPath)
+        
+        download.driveService = self.driveService
         
         return download
     }
@@ -361,8 +391,31 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
     }
 }
 
+//GoogleDriveMetadata class
+class GoogleDriveMetadata : CloudDriveMetadata{
+    
+    var mimeType : String
+    
+    init(m_fileId: String, m_folder: Bool, m_underRootFolder: Bool, m_name: String, m_mimeType: String) {
+        
+        self.mimeType = m_mimeType
+        
+        super.init(m_fileId: m_fileId, m_folder: m_folder, m_underRootFolder: m_underRootFolder, m_name: m_name)
+    }
+}
+
 //MARK:DropBoxDownload class
 class GoogleDriveDownload : CloudDriveDownloadTask, CloudDriveDownloadProtocol{
+    
+    weak var driveService : GTLServiceDrive?
+    private var fetcher : GTMSessionFetcher?
+    
+    deinit {
+        
+        self.fetcher?.stopFetching()
+        self.fetcher = nil
+        
+    }
     
     override func driveTypeString() -> String{
         
@@ -371,9 +424,73 @@ class GoogleDriveDownload : CloudDriveDownloadTask, CloudDriveDownloadProtocol{
     
     func startDownload(){
         
+        if self.fetcher != nil{
+            self.fetcher?.stopFetching()
+            self.fetcher = nil
+        }
+        
+        let fileURLStr = String(format: "https://www.googleapis.com/drive/v3/files/%@?alt=media", self.fileId)
+        
+        self.fetcher = driveService?.fetcherService.fetcher(withURLString: fileURLStr)
+        self.fetcher?.destinationFileURL = URL(fileURLWithPath: self.filePathAtLocal)
+        
+        self.fetcher?.downloadProgressBlock = {bytesWritten, totalBytesWritten, totalBytesExpectedToWrite in
+        
+            self.status = .Downloading
+            
+            if (self.fetcher?.response?.expectedContentLength)! <= -1{
+                
+                self.downloadProgress = -1
+            }
+            else {
+               
+                self.downloadProgress = Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
+            }
+            
+            
+            
+            if let handler = self.onDownloadReceiveData{
+                
+                handler(self, self.downloadProgress)
+            }
+        }
+        
+        //begin download data
+        self.fetcher?.beginFetch(completionHandler: { data, error in
+            
+            if error != nil{
+                
+                self.status = .Error
+                
+                if let handler = self.onDownloadError{
+                    
+                    handler(self, CloudDriveError.CloudDriveDownloadError(error as! String))
+                }
+            }
+            else {
+                
+                self.status = .Complete
+                self.downloadProgress = 1.0
+                
+                if let handler = self.onDownloadComplete{
+                    
+                    handler(self)
+                    
+                    self.fetcher = nil
+                }
+            }
+        })
     }
     
     func cancelDownload() {
         
+        self.fetcher?.stopFetching()
+        self.status = .Cancel
+        self.fetcher = nil
+        
+        if let handler = self.onDownloadCancel{
+            
+            handler(self)
+        }
     }
 }

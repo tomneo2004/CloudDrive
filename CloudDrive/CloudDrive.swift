@@ -36,44 +36,112 @@ enum CloudDriveType : String {
 /**
  Represent the file and folder in could drive
  */
-struct CloudDriveMetadata{
+class CloudDriveMetadata{
+    
+    /**
+     previous metadata
+    */
+    var previous : CloudDriveMetadata? = nil
+    
+    /**
+     File ID
+    */
+    var fileId : String
     
     /**
      Is it a folder or file
      true:folder
      false:file
     */
-    let isFolder : Bool
+    var isFolder : Bool
     
     /**
      Is parent folder a root folder
      Is under root folder or not
     */
-    let isUnderRoot : Bool
+    var isUnderRoot : Bool
     
     /**
      Name of folder or file
      include extension if it is file
     */
-    let name : String
+    var name : String
     
-    /**
-     Name of parent folder which content this folder or file
-    */
-    let parentFolderName : String
     
-    /**
-     The path this folder or file located
-    */
-    let underPath : String
     
-    init(m_folder:Bool, m_underRootFolder:Bool, m_name:String, m_ParentFolderName:String, m_underPath:String) {
         
+    init(m_fileId:String,m_folder:Bool, m_underRootFolder:Bool, m_name:String) {
+        
+        self.fileId = m_fileId
         self.isFolder = m_folder
         self.isUnderRoot = m_underRootFolder
         self.name = m_name
-        self.parentFolderName = m_ParentFolderName
-        self.underPath = m_underPath
+    }
+    
+    deinit {
+        
+        if self.previous != nil {
+            
+            self.previous = nil
+        }
+        
+    }
+    
+    func hasTargetChain(target : CloudDriveMetadata) -> Bool{
+        
+        var next : CloudDriveMetadata? = self
+        
+        repeat{
+            
+            if next === target{
+                
+                return true
+            }
+            
+            if let pre = next?.previous{
+               
+                next = pre
+            }
+            else {
+                
+                next = nil
+            }
+            
+            
+        }while(next != nil)
+        
+        return false
+    }
+    
+    func breakChainUntil(target : CloudDriveMetadata){
+        
+        var next : CloudDriveMetadata? = self
+        
+        while(next != nil && next !== target){
+            
+            let p = next
+            
+            if let pre = next?.previous{
+                
+                next = pre
+            }
+            else {
+                
+                next = nil
+            }
+            
+            p?.previous = nil
+            
+            
+        }
+        
+        #if DEBUG
+            while(next != nil){
+                
+                print(next?.name)
+                next = next?.previous
+            }
+        #endif
     }
 }
 
@@ -89,7 +157,6 @@ func CLOUD_DRIVE_CHECK(obj:CloudDriveManager){
     assert(obj.currentDrive != nil, "No current cloud drive")
 }
 
-let defalutRootPath : String = ""
 
 enum CleanDownloadTaskOption : UInt{
     
@@ -105,9 +172,9 @@ class CloudDriveManager : NSObject{
     /**
      Register to listen callback when cloud drive change directory
      
-     Given current path, is in root
+     Given current metadata, is in root
     */
-    var onDirectoryPathChanged : ((String, Bool) -> ())?
+    var onDirectoryPathChanged : ((CloudDriveMetadata?, Bool) -> ())?
     
     /**
      Register to listen callback when a download task begin
@@ -158,18 +225,19 @@ class CloudDriveManager : NSObject{
     /**
      Current path you are in
     */
-    var currentPath : String = defalutRootPath{
+    var currentMetadata : CloudDriveMetadata? = nil{
         
         didSet{
             
             //notify directory changed
             if let handler = self.onDirectoryPathChanged {
                 
-                handler(self.currentPath, self.isRoot)
+                handler(self.currentMetadata, self.isRoot)
             }
         }
     }
     
+    /*
     /**
      Previous path 
     */
@@ -180,6 +248,7 @@ class CloudDriveManager : NSObject{
             return self.removeLastPath(path: self.currentPath)
         }
     }
+     */
     
     /**
      Is current in root directory
@@ -190,10 +259,10 @@ class CloudDriveManager : NSObject{
             
             if self.currentDrive != nil{
                 
-                return currentPath == (self.currentDrive as! CloudDriveProtocol).rootPath()
+                return self.currentMetadata == nil
             }
             
-            return currentPath == defalutRootPath
+            return true
         }
     }
     
@@ -267,7 +336,31 @@ class CloudDriveManager : NSObject{
      
      False if you like to preserve in queue
     */
-    var autoCleanDownloadTask : Bool = false
+    var autoCleanDownloadTask : Bool = false{
+        
+        didSet{
+            
+            if autoCleanDownloadTask == true{
+                
+                var arr = Array<CloudDriveDownloadTask>()
+                
+                for t in self.downloadTasks{
+                    
+                    if t.status != .Downloading && t.status != .BeginDownload{
+                        
+                        arr.append(t)
+                    }
+                }
+                
+                for t in arr{
+                    
+                    self.removeDownloadTask(task: t)
+                }
+                
+                arr.removeAll()
+            }
+        }
+    }
     
     override init(){
         
@@ -280,7 +373,7 @@ class CloudDriveManager : NSObject{
         
         NotificationCenter.default.removeObserver(self, name: .UIApplicationDidReceiveMemoryWarning, object: nil)
     }
-    
+    /*
     /**
      Return new path with path component base on current path
     */
@@ -325,6 +418,7 @@ class CloudDriveManager : NSObject{
         
         return (self.currentDrive as! CloudDriveProtocol).rootPath()
     }
+    */
     
     /**
      Start authorize process
@@ -336,10 +430,10 @@ class CloudDriveManager : NSObject{
     }
     
     /**
-     Return list of data for specific path in cloud drive
+     Return list of data with metadata
      return nil if not found
      */
-    func listContentInPath(path:String, completeHandler:(([CloudDriveMetadata]?, CloudDriveError?) ->())?){
+    func listContentWithMetadata(metadata:CloudDriveMetadata?, completeHandler:(([CloudDriveMetadata]?, CloudDriveError?) ->())?){
         
         guard currentDrive != nil else {
             
@@ -351,6 +445,12 @@ class CloudDriveManager : NSObject{
             return
         }
         
+        if let meta = metadata{
+            
+            assert(meta.isFolder, "Can not get list of contents with file metadata")
+        }
+        
+        
         if isQuerying {
             
             //no more reuqest can be made if last one is not yet respond
@@ -359,14 +459,38 @@ class CloudDriveManager : NSObject{
         
         self.isQuerying = true
         
-        (currentDrive as! CloudDriveProtocol).contentsAtPath(path: path, complete: { result, error in
+        (currentDrive as! CloudDriveProtocol).contentsWithMetadata(metadata: metadata, complete: { result, error in
             
             self.isQuerying = false
             
+            //no error
             if error == nil {
                 
-                //change current path
-                self.currentPath = path
+                if metadata != nil {
+                    
+                    if let curMetadata = self.currentMetadata{
+                        
+                        if (self.currentMetadata?.hasTargetChain(target: metadata!))!{
+                            
+                            self.currentMetadata?.breakChainUntil(target: metadata!)
+                            self.currentMetadata = metadata
+                            
+                        } else {
+                            
+                            metadata?.previous = curMetadata
+                            self.currentMetadata = metadata
+                        }
+                        
+                        
+                    } else {
+                        
+                        self.currentMetadata = metadata
+                    }
+                    
+                } else {
+                    
+                    self.currentMetadata = nil
+                }
                 
             }
             
@@ -383,11 +507,14 @@ class CloudDriveManager : NSObject{
      Return list of data for specific path in cloud drive
      return nil if not found
      */
+    
     func goToParentDirectory(completeHandler:(([CloudDriveMetadata]?, CloudDriveError?)->())?){
         
-        let parentPath = self.removeLastPath(path: self.currentPath)
+        if let curMetadata = self.currentMetadata{
+            
+            self.listContentWithMetadata(metadata: curMetadata.previous, completeHandler: completeHandler)
+        }
         
-        self.listContentInPath(path: parentPath, completeHandler: completeHandler)
     }
     
     /**
@@ -412,23 +539,33 @@ class CloudDriveManager : NSObject{
             return (drive as! CloudDriveProtocol).rootPath()
         }
         
-        return defalutRootPath
+        return ""
     }
     
     /**
      Download file from cloud drive
      Return dwonload task if download is valid
     */
-    func downloadFileFromPath(path:String, localPath:String, resultHandler:((CloudDriveDownloadTask?, CloudDriveError?)->())?){
+    func downloadFileFromPath(metadata:CloudDriveMetadata, localPath:String, resultHandler:((CloudDriveDownloadTask?, CloudDriveError?)->())?){
         
         CLOUD_DRIVE_CHECK(obj: self)
         
-        //check download exist
-        if self.isDownloadExist(driveType: (self.currentDrive as! CloudDriveProtocol).driveType(), filePath: path){
+        if metadata.isFolder{
             
             if let handler = resultHandler{
                 
-                let msg = "Download from \(path) in \((self.currentDrive as! CloudDriveProtocol).driveTypeString()) already in downloading, can not make duplicate download at same time"
+                handler(nil, CloudDriveError.CloudDriveInternalError("Download item is folder not file"))
+            }
+            
+            return
+        }
+        
+        //check download exist
+        if self.isDownloadExist(driveType: (self.currentDrive as! CloudDriveProtocol).driveType(), fileId: metadata.fileId){
+            
+            if let handler = resultHandler{
+                
+                let msg = "Download file \(metadata.name) from \((self.currentDrive as! CloudDriveProtocol).driveTypeString()) already in downloading, can not make duplicate download at same time"
                 
                 handler(nil, CloudDriveError.CloudDriveDownloadExist(msg))
             }
@@ -437,7 +574,7 @@ class CloudDriveManager : NSObject{
         }
         
         //create new download task
-        let task:CloudDriveDownloadTask = (self.currentDrive as! CloudDriveProtocol).createDownloadTask(path: path, localPath: localPath)
+        let task:CloudDriveDownloadTask = (self.currentDrive as! CloudDriveProtocol).createDownloadTask(metadata: metadata, localPath: localPath)
         
         //always over write local file
         task.overWriteFile = true
@@ -552,7 +689,8 @@ class CloudDriveManager : NSObject{
             (self.currentDrive as! CloudDriveProtocol).logout()
             
             self.currentDrive = nil
-            self.currentPath = defalutRootPath
+            self.currentMetadata = nil
+            self.isQuerying = false
         }
     }
     
@@ -658,6 +796,9 @@ class CloudDriveManager : NSObject{
     
     private func setDrive(driveType:CloudDriveType){
         
+        self.currentMetadata = nil
+        self.isQuerying = false
+        
         switch driveType {
         case .DropBox:
             if (currentDrive == nil)||(currentDrive as! CloudDriveProtocol).driveType() != .DropBox{
@@ -676,19 +817,14 @@ class CloudDriveManager : NSObject{
                 return
             }
             
-            self.currentPath = defalutRootPath
-            return
         }
-        
-        
-        self.currentPath = (self.currentDrive as! CloudDriveProtocol).rootPath()
     }
     
-    private func isDownloadExist(driveType:CloudDriveType, filePath:String) -> Bool{
+    private func isDownloadExist(driveType:CloudDriveType, fileId:String) -> Bool{
         
         for task in self.downloadTasks{
             
-           let exist = task.driveType == driveType && task.filePathAtCloud == filePath
+           let exist = task.driveType == driveType && task.fileId == fileId && (task.status == .BeginDownload || task.status == .Downloading)
             
             if exist {
                 
@@ -738,9 +874,9 @@ protocol CloudDriveProtocol {
     func authorize(inController:UIViewController)
     
     /**
-     Get list of data at path
+     Get list of data with metadata
      */
-    func contentsAtPath(path:String, complete:(([CloudDriveMetadata]?, CloudDriveError?)->())?)
+    func contentsWithMetadata(metadata:CloudDriveMetadata?, complete:(([CloudDriveMetadata]?, CloudDriveError?)->())?)
     
     /**
      Return type of cloud drive
@@ -770,7 +906,7 @@ protocol CloudDriveProtocol {
     /**
      Return a new download task
      */
-    func createDownloadTask(path:String, localPath:String) -> CloudDriveDownloadTask
+    func createDownloadTask(metadata:CloudDriveMetadata, localPath:String) -> CloudDriveDownloadTask
     
     /**
      Logout
@@ -838,6 +974,19 @@ enum downloadStatus {
 class CloudDriveDownloadTask: NSObject{
     
     /**
+     File Id
+    */
+    private let fileID : String
+    
+    var fileId : String{
+        
+        get{
+            
+            return self.fileID
+        }
+    }
+    
+    /**
      UUID
      
      Unique indentifier of download task
@@ -887,13 +1036,18 @@ class CloudDriveDownloadTask: NSObject{
     }
     
     /**
-     Return file name of file
+     Download file's name
     */
-    var filename : String {
+    private let filename : String
+    
+    /**
+     Return file name of file
+     */
+    var fileName : String {
         
         get{
             
-            return (self.cloudFilePath as NSString).lastPathComponent
+            return self.filename
         }
     }
     
@@ -912,6 +1066,8 @@ class CloudDriveDownloadTask: NSObject{
     
     /**
      Download progress
+     
+     Negative value mean unknow
     */
     var downloadProgress : Float = 0.0
     
@@ -931,8 +1087,10 @@ class CloudDriveDownloadTask: NSObject{
     var onDownloadCancel : ((CloudDriveDownloadTask)->())?
     var onDownloadComplete : ((CloudDriveDownloadTask)->())?
     
-    init(type:CloudDriveType, path:String, localPath:String){
+    init(file_ID:String, file_name:String, type:CloudDriveType, path:String, localPath:String){
         
+        self.fileID = file_ID
+        self.filename = file_name
         self.cloudType = type
         self.cloudFilePath = path
         self.localFilePath = localPath
