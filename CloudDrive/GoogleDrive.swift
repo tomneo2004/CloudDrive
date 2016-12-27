@@ -31,6 +31,8 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
     private var driveService : GTLServiceDrive = GTLServiceDrive()
     private var authFlow : Any?
     
+    
+    //MARK:Internal
     /**
      Start google drive service
      
@@ -140,6 +142,7 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
 
     }
     
+    //MARK:Implement protocol
     /**
      Start authorize process
      */
@@ -274,6 +277,11 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
                         let newMetadata = GoogleDriveMetadata(m_fileId: file.identifier, m_folder: isFolder, m_underRootFolder: underRoot, m_name: file.name, m_mimeType: file.mimeType)
                         
                         retMetadata.append(newMetadata)
+                        
+                        #if DEBUG
+                            print("file \(file)")
+                            print("\n")
+                        #endif
                     }
                 }
                 
@@ -311,34 +319,6 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
     }
     
     /**
-     Return new appending path
-     */
-    func appendingPathComponent(currentPath:String, component:String) -> String{
-        
-        if currentPath == rootPath(){
-            
-            return ("root" as NSString).appendingPathComponent(component)
-        }
-        
-        return (currentPath as NSString).appendingPathComponent(component)
-    }
-    
-    /**
-     Return new deleting last path
-     */
-    func deletingLastPathComponent(path:String) -> String{
-        
-        let removedPath = (path as NSString).deletingLastPathComponent
-        
-        if removedPath == rootPath() || removedPath == ""{
-            
-            return self.rootPath()
-        }
-        
-        return removedPath
-    }
-    
-    /**
      Return a new download task
      */
     func createDownloadTask(metadata:CloudDriveMetadata, localPath:String) -> CloudDriveDownloadTask{
@@ -347,6 +327,7 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
         let download = GoogleDriveDownload(file_ID:metadata.fileId, file_name:metadata.name, type: .GoogleDrive, path: "", localPath: localPath)
         
         download.driveService = self.driveService
+        download.mimetype = (metadata as! GoogleDriveMetadata).mimeType
         
         return download
     }
@@ -391,7 +372,7 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
     }
 }
 
-//GoogleDriveMetadata class
+//MARK:GoogleDriveMetadata class
 class GoogleDriveMetadata : CloudDriveMetadata{
     
     var mimeType : String
@@ -404,11 +385,19 @@ class GoogleDriveMetadata : CloudDriveMetadata{
     }
 }
 
-//MARK:DropBoxDownload class
+//MARK:GoogleDriveDownload class
 class GoogleDriveDownload : CloudDriveDownloadTask, CloudDriveDownloadProtocol{
     
     weak var driveService : GTLServiceDrive?
+    var mimetype : String?
     private var fetcher : GTMSessionFetcher?
+    
+    /**
+     These mimetype of file need to convert to pdf when download
+    */
+    private var googleConvertableMimetypes = ["application/vnd.google-apps.document",
+                                              "application/vnd.google-apps.presentation",
+                                              "application/vnd.google-apps.spreadsheet"]
     
     deinit {
         
@@ -429,7 +418,17 @@ class GoogleDriveDownload : CloudDriveDownloadTask, CloudDriveDownloadProtocol{
             self.fetcher = nil
         }
         
-        let fileURLStr = String(format: "https://www.googleapis.com/drive/v3/files/%@?alt=media", self.fileId)
+        var fileURLStr = ""
+        
+        if googleConvertableMimetypes.contains(self.mimetype!){
+            
+            //we need to convert to pdf says by Google
+            fileURLStr = String(format: "https://www.googleapis.com/drive/v3/files/%@/export?alt=media&mimeType=application/pdf", self.fileId)
+        }
+        else {
+            
+            fileURLStr = String(format: "https://www.googleapis.com/drive/v3/files/%@?alt=media", self.fileId)
+        }
         
         self.fetcher = driveService?.fetcherService.fetcher(withURLString: fileURLStr)
         self.fetcher?.destinationFileURL = URL(fileURLWithPath: self.filePathAtLocal)

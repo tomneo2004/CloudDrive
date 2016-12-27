@@ -38,6 +38,7 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
         self.client = nil
     }
     
+    //MARK:Internal
     private func verifiesURLSchemes() {
         
         // verifies that the custom URI scheme has been updated in the Info.plist
@@ -60,6 +61,28 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
         }
         
         assert(urlScheme != nil, "Configure the URI scheme in Info.plist (URL Types -> Item 0 -> URL Schemes -> Item 0) and give your DropBox app key e.g: db-[YourDropBoxAppKey]")
+    }
+    
+    private func appendingPathComponent(currentPath:String, component:String) -> String{
+        
+        if currentPath == rootPath(){
+            
+            return ("/" as NSString).appendingPathComponent(component)
+        }
+        
+        return (currentPath as NSString).appendingPathComponent(component)
+    }
+    
+    private func deletingLastPathComponent(path:String) -> String{
+        
+        let removedPath = (path as NSString).deletingLastPathComponent
+        
+        if removedPath == "/" || removedPath == ""{
+            
+            return self.rootPath()
+        }
+        
+        return removedPath
     }
     
     //MARK:CloudDriveProtocol
@@ -178,28 +201,6 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
     func rootPath() -> String{
         
         return ""
-    }
-    
-    func appendingPathComponent(currentPath:String, component:String) -> String{
-        
-        if currentPath == rootPath(){
-            
-           return ("/" as NSString).appendingPathComponent(component)
-        }
-        
-        return (currentPath as NSString).appendingPathComponent(component)
-    }
-    
-    func deletingLastPathComponent(path:String) -> String{
-        
-        let removedPath = (path as NSString).deletingLastPathComponent
-        
-        if removedPath == "/" || removedPath == ""{
-            
-            return self.rootPath()
-        }
-        
-        return removedPath
     }
     
     func createDownloadTask(metadata:CloudDriveMetadata, localPath:String) -> CloudDriveDownloadTask {

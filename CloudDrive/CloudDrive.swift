@@ -373,52 +373,6 @@ class CloudDriveManager : NSObject{
         
         NotificationCenter.default.removeObserver(self, name: .UIApplicationDidReceiveMemoryWarning, object: nil)
     }
-    /*
-    /**
-     Return new path with path component base on current path
-    */
-    func appendingPathComponent(newPath:String) -> String{
-        
-        CLOUD_DRIVE_CHECK(obj: self)
-        
-        if let drive = self.currentDrive{
-            
-            return (drive as! CloudDriveProtocol).appendingPathComponent(currentPath: self.currentPath, component: newPath)
-        }
-        
-        return (self.currentDrive as! CloudDriveProtocol).rootPath()
-    }
-    
-    /**
-     Return new path with path component base on given path
-     */
-    func appendingPathComponent(path:String, component:String) -> String{
-        
-        CLOUD_DRIVE_CHECK(obj: self)
-        
-        if let drive = self.currentDrive{
-            
-            return (drive as! CloudDriveProtocol).appendingPathComponent(currentPath: path, component: component)
-        }
-        
-        return (self.currentDrive as! CloudDriveProtocol).rootPath()
-    }
-    
-    /**
-     Delete last path component and return new path
-     */
-    func removeLastPath(path:String) -> String{
-        
-        CLOUD_DRIVE_CHECK(obj: self)
-        
-        if let drive = self.currentDrive {
-            
-            return (drive as! CloudDriveProtocol).deletingLastPathComponent(path: path)
-        }
-        
-        return (self.currentDrive as! CloudDriveProtocol).rootPath()
-    }
-    */
     
     /**
      Start authorize process
@@ -526,20 +480,6 @@ class CloudDriveManager : NSObject{
             
             drive.handleRedirect(url: url)
         }
-    }
-    
-    /**
-     Return root path of current drive
-     return empty string if anything go wrong
-     */
-    func rootPathOfCloudDrive() -> String{
-        
-        if let drive = currentDrive{
-            
-            return (drive as! CloudDriveProtocol).rootPath()
-        }
-        
-        return ""
     }
     
     /**
@@ -887,21 +827,6 @@ protocol CloudDriveProtocol {
      Return type of cloud drive in string
     */
     func driveTypeString() -> String
-    
-    /**
-     Return root path
-     */
-    func rootPath() -> String
-    
-    /**
-     Return new appending path
-     */
-    func appendingPathComponent(currentPath:String, component:String) -> String
-    
-    /**
-     Return new deleting last path
-     */
-    func deletingLastPathComponent(path:String) -> String
     
     /**
      Return a new download task
