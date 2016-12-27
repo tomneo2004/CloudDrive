@@ -24,7 +24,6 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
         //DropboxClientsManager.setupWithAppKey("e1acqhgupugq70w")
         
     }()
-    
     var client : DropboxClient?
     
     required override init() {
@@ -86,7 +85,7 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
         }, browserAuth: false)
     }
     
-    func contentsAtPath(path: String, complete: (([CloudDriveMetadata]?, CloudDriveError?) -> ())?){
+    func contentsWithMetadata(metadata:CloudDriveMetadata?, complete:(([CloudDriveMetadata]?, CloudDriveError?)->())?){
         
         guard self.client != nil else {
         
@@ -97,6 +96,19 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
             
             return
         }
+        
+        let meta = metadata as? DropBoxMetadata
+        var path = self.rootPath()
+        
+        if meta == nil{
+            
+            path = self.rootPath()
+            
+        } else {
+            
+            path = self.appendingPathComponent(currentPath: (meta?.underPath)!, component: (meta?.name)!)
+        }
+        
         
         self.client?.files.listFolder(path: path).response(completionHandler: { result, error in
             
@@ -114,20 +126,23 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
                 
                 var retMetadata = Array<CloudDriveMetadata>()
                 
-                let lastPath = path == "" ? path : (path as NSString).lastPathComponent
-                let underRoot = path == "" ? true : false
+                let lastPath = path == self.rootPath() ? path : (path as NSString).lastPathComponent
+                let underRoot = path == self.rootPath() ? true : false
                 
                 for metadata in (result?.entries)!{
                     
                     //metadata is folder
                     if metadata is Files.FolderMetadata{
                         
-                        retMetadata.append(CloudDriveMetadata(m_folder: true, m_underRootFolder: underRoot, m_name: metadata.name, m_ParentFolderName:lastPath, m_underPath: path))
+                        retMetadata.append(DropBoxMetadata(m_fileId:"", m_folder: true, m_underRootFolder: underRoot, m_name: metadata.name, m_parentFolderName:lastPath, m_underPath: path))
                     }
-                    //metadata is file
+                        //metadata is file
                     else if metadata is Files.FileMetadata{
                         
-                        retMetadata.append(CloudDriveMetadata(m_folder: false, m_underRootFolder: underRoot, m_name: metadata.name, m_ParentFolderName:lastPath, m_underPath: path))
+                        let fileId = (metadata as! Files.FileMetadata).id
+                        
+                        retMetadata.append(DropBoxMetadata(m_fileId:fileId, m_folder: false, m_underRootFolder: underRoot, m_name: metadata.name, m_parentFolderName:lastPath, m_underPath: path))
+                        
                     }
                 }
                 
@@ -146,6 +161,8 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
                 
             }
         })
+        
+        
     }
     
     func driveType() -> CloudDriveType{
@@ -185,9 +202,13 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
         return removedPath
     }
     
-    func createDownloadTask(path: String, localPath: String) -> CloudDriveDownloadTask {
+    func createDownloadTask(metadata:CloudDriveMetadata, localPath:String) -> CloudDriveDownloadTask {
     
-        let download = DropBoxDownload(type: .DropBox, path: path, localPath: localPath)
+        let meta = metadata as! DropBoxMetadata
+        
+        let path = self.appendingPathComponent(currentPath: meta.underPath, component: meta.name)
+        
+        let download = DropBoxDownload(file_ID:metadata.fileId, file_name:metadata.name, type: .DropBox, path: path, localPath: localPath)
         download.client = self.client
         
         return download
@@ -230,6 +251,29 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
         
         return "DropBox"
     }
+}
+
+//MARK:DropBoxMetadata
+class DropBoxMetadata: CloudDriveMetadata{
+    
+    /**
+     Name of parent folder which content this folder or file
+     */
+    var parentFolderName : String
+    
+    /**
+     The path this folder or file located
+     */
+    var underPath : String
+    
+    init(m_fileId: String, m_folder: Bool, m_underRootFolder: Bool, m_name: String, m_parentFolderName:String, m_underPath:String) {
+        
+        self.parentFolderName = m_parentFolderName
+        self.underPath = m_underPath
+        
+        super.init(m_fileId:m_fileId, m_folder: m_folder, m_underRootFolder: m_underRootFolder, m_name: m_name)
+    }
+
 }
 
 //MARK:DropBoxDownload class
@@ -288,6 +332,8 @@ class DropBoxDownload : CloudDriveDownloadTask, CloudDriveDownloadProtocol{
             else{
                 
                 self.status = .Complete
+                self.downloadProgress = 1.0
+                
                 if let handler = self.onDownloadComplete{
                     
                     handler(self)

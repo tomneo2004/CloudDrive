@@ -22,6 +22,7 @@ class DownloadViewController : UIViewController, UITableViewDelegate, UITableVie
         
         self.title = "Download"
         
+        CloudDriveManager.shareInstance.autoCleanDownloadTask = false
         
         CloudDriveManager.shareInstance.onDownloadBegin = {task in
         
@@ -106,12 +107,12 @@ class DownloadViewController : UIViewController, UITableViewDelegate, UITableVie
     
     func configureCell(cell : DownloadCell, task:CloudDriveDownloadTask) -> DownloadCell{
         
-        cell.filenameLable?.text = task.filename
+        cell.filenameLable?.text = task.fileName
         cell.progressView?.progress = task.downloadProgress
         
         switch task.status {
         case .Downloading:
-            cell.statusLabel?.text = "\(UInt(task.downloadProgress * 100.0))%"
+            cell.statusLabel?.text = task.downloadProgress < 0 ? "Unknow progress" : "\(UInt(task.downloadProgress * 100.0))%"
         case .Complete:
             cell.statusLabel?.text = "Download complete"
             cell.statusLabel?.textColor = self.completeColor
