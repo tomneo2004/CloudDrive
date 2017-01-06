@@ -26,6 +26,8 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
     }()
     var client : DropboxClient?
     
+    var retMetadata : Array<CloudDriveMetadata>?
+    
     required override init() {
         
         super.init()
@@ -108,6 +110,9 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
         }, browserAuth: false)
     }
     
+    var lastPath : String?
+    var underRoot : Bool?
+    var tempPath : String?
     func contentsWithMetadata(metadata:CloudDriveMetadata?, complete:(([CloudDriveMetadata]?, CloudDriveError?)->())?){
         
         guard self.client != nil else {
@@ -121,19 +126,19 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
         }
         
         let meta = metadata as? DropBoxMetadata
-        var path = self.rootPath()
+        self.tempPath = self.rootPath()
         
         if meta == nil{
             
-            path = self.rootPath()
+            self.tempPath = self.rootPath()
             
         } else {
             
-            path = self.appendingPathComponent(currentPath: (meta?.underPath)!, component: (meta?.name)!)
+            self.tempPath = self.appendingPathComponent(currentPath: (meta?.underPath)!, component: (meta?.name)!)
         }
         
         
-        self.client?.files.listFolder(path: path).response(completionHandler: { result, error in
+        self.client?.files.listFolder(path: self.tempPath!).response(completionHandler: { result, error in
             
             if error == nil {
                 
@@ -147,31 +152,41 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
                     return
                 }
                 
-                var retMetadata = Array<CloudDriveMetadata>()
+                self.retMetadata = Array<CloudDriveMetadata>()
                 
-                let lastPath = path == self.rootPath() ? path : (path as NSString).lastPathComponent
-                let underRoot = path == self.rootPath() ? true : false
+                self.lastPath = self.tempPath == self.rootPath() ? self.tempPath : (self.tempPath! as NSString).lastPathComponent
+                self.underRoot = self.tempPath == self.rootPath() ? true : false
                 
-                for metadata in (result?.entries)!{
+                self.processContents(result: result)
+                
+                //has more contents
+                if (result?.hasMore)!{
                     
-                    //metadata is folder
-                    if metadata is Files.FolderMetadata{
+                    self.getNextContents(cursor: (result?.cursor)!, complete: { successful in
                         
-                        retMetadata.append(DropBoxMetadata(m_fileId:"", m_folder: true, m_underRootFolder: underRoot, m_name: metadata.name, m_parentFolderName:lastPath, m_underPath: path))
-                    }
-                        //metadata is file
-                    else if metadata is Files.FileMetadata{
-                        
-                        let fileId = (metadata as! Files.FileMetadata).id
-                        
-                        retMetadata.append(DropBoxMetadata(m_fileId:fileId, m_folder: false, m_underRootFolder: underRoot, m_name: metadata.name, m_parentFolderName:lastPath, m_underPath: path))
-                        
-                    }
+                        if successful{
+                            
+                            if let handler = complete {
+                                
+                                handler(self.retMetadata, nil)
+                            }
+                        }
+                        else {
+                            
+                            if let handler = complete{
+                                
+                                handler(nil, CloudDriveError.CloudDriveInternalError("Can not load content"))
+                            }
+                        }
+                    })
+                    
                 }
-                
-                if let handler = complete {
+                else {
                     
-                    handler(retMetadata, nil)
+                    if let handler = complete {
+                        
+                        handler(self.retMetadata, nil)
+                    }
                 }
                 
             }
@@ -184,7 +199,53 @@ class DropBoxDrive : CloudDrive, CloudDriveProtocol{
                 
             }
         })
+    }
+    
+    private func getNextContents(cursor:String, complete:@escaping (Bool)->()){
         
+        self.client?.files.listFolderContinue(cursor: cursor).response(completionHandler: { result, error in
+            
+            if error != nil{
+            
+                complete(false)
+            }
+            else {
+                
+                self.processContents(result: result)
+                
+                if (result?.hasMore)!{
+                    
+                    self.getNextContents(cursor: (result?.cursor)!, complete: complete)
+                }
+                else {
+                    
+                    complete(true)
+                }
+            }
+            
+            
+        })
+    }
+    
+    
+    private func processContents(result : Files.ListFolderResult?){
+        
+        for metadata in (result?.entries)!{
+            
+            //metadata is folder
+            if metadata is Files.FolderMetadata{
+                
+                self.retMetadata?.append(DropBoxMetadata(m_fileId:"", m_folder: true, m_underRootFolder: self.underRoot!, m_name: metadata.name, m_parentFolderName:self.lastPath!, m_underPath: self.tempPath!))
+            }
+                //metadata is file
+            else if metadata is Files.FileMetadata{
+                
+                let fileId = (metadata as! Files.FileMetadata).id
+                
+                self.retMetadata?.append(DropBoxMetadata(m_fileId:fileId, m_folder: false, m_underRootFolder: self.underRoot!, m_name: metadata.name, m_parentFolderName:self.lastPath!, m_underPath: self.tempPath!))
+                
+            }
+        }
         
     }
     

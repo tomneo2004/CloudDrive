@@ -31,6 +31,8 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
     private var driveService : GTLServiceDrive = GTLServiceDrive()
     private var authFlow : Any?
     
+    var retMetadata : Array<CloudDriveMetadata>?
+    
     
     //MARK:Internal
     /**
@@ -231,17 +233,18 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
     /**
      Get list of data at path
      */
+    var underRoot : Bool?
     func contentsWithMetadata(metadata:CloudDriveMetadata?, complete:(([CloudDriveMetadata]?, CloudDriveError?)->())?){
         
         //default is root
         var queryString = "'root' in parents"
-        var underRoot : Bool = true
+        self.underRoot = true
         
         if let meta = metadata{
             
             queryString = (queryString as NSString).replacingOccurrences(of: "root", with: meta.fileId)
             
-            underRoot = false
+            self.underRoot = false
         }
         
         let query = GTLQueryDrive.queryForFilesList()
@@ -262,36 +265,95 @@ class GoogleDrive : CloudDrive, CloudDriveProtocol, OIDAuthStateChangeDelegate, 
             }
             else {
                 
-                var retMetadata = Array<CloudDriveMetadata>()
+                self.retMetadata = Array<CloudDriveMetadata>()
                 
                 let fileLists : GTLDriveFileList = result as! GTLDriveFileList
                 
-                if let list = fileLists.files{
+                self.processContents(fileLists: fileLists)
+                
+                if let token = fileLists.nextPageToken {
                     
-                    for f in list{
+                    self.getNextContents(query: query, nextPageToken: token, complete: { successful in
                         
-                        let file : GTLDriveFile = f as! GTLDriveFile
+                        if successful{
+                            
+                            if let handler = complete {
+                                
+                                handler(self.retMetadata, nil)
+                            }
+                        }
+                        else {
+                            
+                            if let handler = complete{
+                                
+                                handler(nil, CloudDriveError.CloudDriveInternalError("Can not load conetnts"))
+                            }
+                        }
+                    })
+                }
+                else {
+                    
+                    if let handler = complete {
                         
-                        let isFolder = file.mimeType == "application/vnd.google-apps.folder"
-                        
-                        let newMetadata = GoogleDriveMetadata(m_fileId: file.identifier, m_folder: isFolder, m_underRootFolder: underRoot, m_name: file.name, m_mimeType: file.mimeType)
-                        
-                        retMetadata.append(newMetadata)
-                        
-                        #if DEBUG
-                            print("file \(file)")
-                            print("\n")
-                        #endif
+                        handler(self.retMetadata, nil)
                     }
                 }
                 
                 
-                if let handler = complete {
-                    
-                    handler(retMetadata, nil)
-                }
             }
         }
+    }
+    
+    private func getNextContents(query:GTLQueryDrive?, nextPageToken:String, complete:@escaping (Bool)->()){
+        
+        query?.pageToken = nextPageToken
+        
+        self.driveService.executeQuery(query!) { ticket, result, error in
+            
+            if error != nil{
+                
+                complete(false)
+            }
+            else {
+                
+                let fileLists : GTLDriveFileList = result as! GTLDriveFileList
+                
+                self.processContents(fileLists: fileLists)
+                
+                if let token = fileLists.nextPageToken{
+                    
+                    self.getNextContents(query: query, nextPageToken: token, complete: complete)
+                }
+                else {
+                    
+                    complete(true)
+                }
+            }
+
+        }
+    }
+    
+    private func processContents(fileLists : GTLDriveFileList){
+        
+        if let list = fileLists.files{
+            
+            for f in list{
+                
+                let file : GTLDriveFile = f as! GTLDriveFile
+                
+                let isFolder = file.mimeType == "application/vnd.google-apps.folder"
+                
+                let newMetadata = GoogleDriveMetadata(m_fileId: file.identifier, m_folder: isFolder, m_underRootFolder: self.underRoot!, m_name: file.name, m_mimeType: file.mimeType)
+                
+                self.retMetadata?.append(newMetadata)
+                
+                #if DEBUG
+                    print("file \(file)")
+                    print("\n")
+                #endif
+            }
+        }
+
     }
     
     /**

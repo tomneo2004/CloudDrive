@@ -233,7 +233,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             let localFilePath = (documentsPath as NSString).appendingPathComponent(item.name)
             
             
-            CloudDriveManager.shareInstance.downloadFileFromPath(metadata: item, localPath: localFilePath, resultHandler: { task, error in
+            CloudDriveManager.shareInstance.downloadFileWith(metadata: item, localPath: localFilePath, resultHandler: { task, error in
                 
                 if let err = error{
                     

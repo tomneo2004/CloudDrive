@@ -486,7 +486,7 @@ class CloudDriveManager : NSObject{
      Download file from cloud drive
      Return dwonload task if download is valid
     */
-    func downloadFileFromPath(metadata:CloudDriveMetadata, localPath:String, resultHandler:((CloudDriveDownloadTask?, CloudDriveError?)->())?){
+    func downloadFileWith(metadata:CloudDriveMetadata, localPath:String, resultHandler:((CloudDriveDownloadTask?, CloudDriveError?)->())?){
         
         CLOUD_DRIVE_CHECK(obj: self)
         
@@ -792,7 +792,7 @@ class CloudDriveManager : NSObject{
     
     private func addDownloadTask(task:CloudDriveDownloadTask){
         
-        self.downloadTasks.append(task)
+        self.downloadTasks.insert(task, at: 0)
         
         //notify download task add to queue
         if let handler = onDownloadBegin{
